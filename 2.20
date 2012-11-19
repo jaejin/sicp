@@ -1,0 +1,13 @@
+#lang racket
+(define (same-parity first . rest)
+  (cond ((even? first) (cons first (find even? rest)))
+        (else (cons first (find odd? rest)))))
+
+(define (find fun list)
+  (cond ((empty? list) '())
+        ((fun (car list)) (cons (car list) (find fun (cdr list))))
+        (else (find fun (cdr list)))))
+
+
+(same-parity 1 2 3 4 5 6 7)
+(same-parity 2 3 4 5 6 7)
