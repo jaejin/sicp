@@ -72,10 +72,20 @@
 
 (decode sample-message sample-tree)
 
+
+(define (encode-symbol message tree)
+  (define (encode-symbol-bit left right)
+    (cond ((symbol? right) '())
+          ((eq? message (symbol-leaf left)) '(0))
+          (else
+           (cons 1 (encode-symbol-bit (left-branch right) (right-branch right))))))
+  (encode-symbol-bit (left-branch tree) (right-branch tree)))
+          
+    
 (define (encode message tree)
   (if (null? message)
       '()
       (append (encode-symbol (car message) tree)
               (encode (cdr message) tree))))
 
-(eq? (encode (decode sample-message sample-tree) sample-tree) '(0 1 1 0 0 1 0 1 0 1 1 1 0))
+(encode (decode sample-message sample-tree) sample-tree)
