@@ -1,4 +1,5 @@
 #lang racket
+;;3.3, 3.4
 (define (make-account balance password)
   (define (withdraw amount)
     (if (>= balance amount)
@@ -8,21 +9,35 @@
   (define (deposit amount)
     (set! balance (+ balance amount))
     balance)
+  (define (how-many-calls count)
+    (lambda (m)
+      (begin (set! count (+ count 1))
+             (if (> count 7)
+                 "call-the-cops"
+                 "Incorrect Password"))))
+  (define result (how-many-calls 0))
   (define (dispatch pass m)
-    (let ((how-many-calls 0))
-      (if (eq? password pass)
+    (if (eq? password pass)
           (cond ((eq? m 'withdraw) withdraw)
                 ((eq? m 'deposit) deposit)
                 (else (error "Unkown request -- MAKE-ACCOUNT"
                              m)))
-                 (if (> how-many-calls 7)
-                     (error "call-the-cops")
-                     (begin (set! how-many-calls (+ how-many-calls 1))
-                            (display "Incorrect password "))))))
+          result))
   dispatch)
 
 (define acc (make-account 100 'secret-password))
 ((acc 'secret-password 'withdraw) 40)
+
+(define (how-many-calls count)
+  (lambda (m)
+  (begin (set! count (+ count 1))
+         (if (> count 7)
+             "call-the-cops"
+             "Incorrect Password"))))
+
+(define acc2 (how-many-calls 0))
+((acc 'some-secret-password 'deposit) 50)
+((acc 'some-secret-password 'deposit) 50)
 ((acc 'some-secret-password 'deposit) 50)
 ((acc 'some-secret-password 'deposit) 50)
 ((acc 'some-secret-password 'deposit) 50)
