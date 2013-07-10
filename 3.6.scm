@@ -1,0 +1,21 @@
+#lang racket
+(define (make-rand seed)
+    (define (dispatch command)
+      (cond ((eq? 'generate command) 
+             (random seed))
+            ((eq? 'reset command)
+             (lambda (new-seed)
+               (begin (set! seed new-seed)
+                      (random seed))))))
+    dispatch)
+
+(define rand (make-rand 5))
+(rand 'generate)
+(rand 'generate)
+(rand 'generate)
+(rand 'generate)
+((rand 'reset) 100)
+
+(rand 'generate)
+(rand 'generate)
+(rand 'generate)
